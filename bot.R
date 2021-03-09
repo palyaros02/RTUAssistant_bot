@@ -13,7 +13,7 @@ updates <- bot$getUpdates()
 # Запрашиваем идентификатор чата
 chat_id <- updates[[1L]]$from_chat_id()
 
-bot$sendMessage(754256022, text = "взлом жопы")
+bot$sendMessage(534436665, text = "взлом жопы")
 chat_id <- "460020469" #460020469 - я 423622323 - ваня 534436665 - саша
 
 # Create Custom Keyboard
@@ -36,3 +36,16 @@ for (i in 1:length(updates)){
   cat(updates[[i]][["message"]][["from"]][["username"]],': ')
   cat(updates[[i]][["message"]][["text"]], sep='\n')
 }
+
+
+
+start <- function(bot, update) {
+  bot$sendMessage(
+    chat_id = update$message$chat$id,
+    text = sprintf("Hello %s!", update$message$from$first_name)
+  )
+}
+
+updater <- Updater(TOKEN) + CommandHandler("start", start)
+
+updater$start_polling() # Send "/start" to the bot
