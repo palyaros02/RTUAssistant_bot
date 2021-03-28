@@ -31,8 +31,9 @@ def get_content(src):
     hrefs = []
 
     for item in items:
-        item_href = item.get("href")
+        item_href = item.get("href").replace(" ", "%20")
         hrefs.append(item_href)
+
         
     with open("parsing/hrefs.json", "w", encoding="utf-8") as file:
         json.dump(hrefs, file, indent=0, ensure_ascii=False)
