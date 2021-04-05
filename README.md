@@ -11,10 +11,12 @@
 * DBI
 * readr
 * RSQLite
+
 Для установки пакетов нужно запустить файл requirements.R 
 
 ## Python:
 * requests v2.25.1
 * lxml v4.6.2
 * beautifulsoup4 v4.9.3
+
 Они находятся в файле requirements.txt
