@@ -1,8 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
-import lxml
 import csv
-import json
+import lxml
 
 URL = "https://www.mirea.ru/schedule/"
 HOST = "https://www.mirea.ru/"
@@ -12,16 +11,10 @@ HEADERS = {
     'user-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0'
 }
 
+
 def get_src(url):
     req = requests.get(url)
     src = req.text
-
-    # If parser will be blocked by site
-    # with open("parsing/index.html", "w", encoding="utf-8") as file:
-    #     file.write(src)
-    # with open("parsing/index.html", encoding="utf-8") as file:
-    #     src = file.read()
-
     return src
 
 
@@ -34,15 +27,11 @@ def get_content(src):
         item_href = item.get("href").replace(" ", "%20")
         hrefs.append(item_href)
 
-        
-    with open("parsing/hrefs.json", "w", encoding="utf-8") as file:
-        json.dump(hrefs, file, indent=0, ensure_ascii=False)
-    
-    with open("parsing/hrefs.csv", "w", newline='', encoding="utf-8") as file:
+    with open("hrefs.txt", "w", newline='', encoding="utf-8") as file:
         writer = csv.writer(file, delimiter=';')
         for item in hrefs:
-            writer.writerow([item])
+            if item[::-1][:4] == "xslx":
+                writer.writerow([item])
 
 
 get_content(get_src(URL))
-        
