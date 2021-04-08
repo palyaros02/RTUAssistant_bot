@@ -5,16 +5,16 @@ library(RSQLite)
 
 library(stringr)
 
-TOKEN <- readLines('.token', warn=F)
+TOKEN <- readLines('.token', warn = F)
 PATH <- "C:/Users/palya/Documents/RTUAssistant_bot"; setwd(PATH)
 
 bot <- Bot(token = TOKEN)
 
 updater <- Updater(TOKEN)
 
-source("db_methods.R")
-source("bot_methods.R")
-source("msg_filters.R")
-source("handlers.R")
+source("0_db_methods.R")   # file with methods for work with DB
+source("1_bot_methods.R")  # file with bot methods (main functionality)
+source("2_msg_filters.R")  # file with message filters
+source("3_handlers.R")     # file with handlers
 
 updater$start_polling()
