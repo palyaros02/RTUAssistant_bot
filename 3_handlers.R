@@ -1,34 +1,34 @@
 ##---- Handlers ----
 ch_start <- CommandHandler("start", start)
 ch_state <- CommandHandler("state", state)
+ch_update <- CommandHandler("update", update)
+
+# mh_BUSY <- MessageHandler(
+#   filters = BOT_IS_BUSY &
+#     !MessageFilters$command,
+#
+#   callback = busy
+# )
 
 mh_wait_group <- MessageHandler(
-
-  set_group,
-
-  MessageFilters$wait_group &
-  !MessageFilters$command
+  filters = MessageFilters$wait_group &
+    !MessageFilters$command, #&
+    # !BOT_IS_BUSY
+  callback = set_group_chat
 )
 
-mh_wait_role <- MessageHandler(
+mh_OK <- MessageHandler(
+  filters = MessageFilters$OK &
+    !MessageFilters$command, #&
+    # !BOT_IS_BUSY,
 
-  set_role,
-
-  MessageFilters$wait_role &
-  !MessageFilters$command
-)
-
-mh_wait_register_check <- MessageHandler(
-
-  register_approve,
-
-  MessageFilters$wait_register_check &
-  !MessageFilters$command
+  callback = menu
 )
 
 updater <- updater +
            ch_start +
            ch_state +
+           ch_update +
            mh_wait_group +
-           mh_wait_role +
-           mh_wait_register_check
+           mh_OK
+           # mh_BUSY

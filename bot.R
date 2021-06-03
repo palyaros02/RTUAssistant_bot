@@ -2,6 +2,7 @@ library(telegram.bot)
 library(DBI)
 library(readr)
 library(RSQLite)
+library(docstring)
 
 library(stringr)
 
@@ -9,7 +10,7 @@ TOKEN <- readLines('.token', warn = F)
 PATH <- "C:/Users/palya/Documents/RTUAssistant_bot"; setwd(PATH)
 
 bot <- Bot(token = TOKEN)
-
+BOT_IS_BUSY <- FALSE
 updater <- Updater(TOKEN)
 
 source("0_db_methods.R")   # file with methods for work with DB
@@ -18,3 +19,7 @@ source("2_msg_filters.R")  # file with message filters
 source("3_handlers.R")     # file with handlers
 
 updater$start_polling()
+
+
+
+

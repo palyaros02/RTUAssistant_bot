@@ -1,4 +1,6 @@
-install.packages(с("telegram.bot", 
-                   "DBI", 
-                   "readr", 
-                   "RSQLite"))
+install.packages(
+  c("telegram.bot",
+    "DBI",
+    "readr",
+    "RSQLite",
+    "docstring"))
