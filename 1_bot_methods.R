@@ -15,7 +15,16 @@ set_group_chat <- function(bot, update) {
   id <- update$message$chat_id
   group <- toupper(update$message$text)
   if (grepl("[А-Я]{4}-[0-9]{2}-[0-9]{2}", group)) { # АБВГ-12-34
-    bot$sendMessage(id, "Принято!")
+    bot$sendMessage(id, "Принято",reply_markup = ReplyKeyboardMarkup(
+      keyboard = list(list(
+        KeyboardButton("На сегодня"),
+        KeyboardButton("На завтра"),
+        KeyboardButton("На неделю")),
+        list(
+          KeyboardButton("На следующую неделю"))
+      ),
+      resize_keyboard = TRUE,
+      one_time_keyboard = FALSE))
     try <- set_group(id, group)
     if (try == 0)
       bot$sendMessage(id, "К сожалению, расписание для твоей группы пока недоступно.")
@@ -29,18 +38,7 @@ set_group_chat <- function(bot, update) {
 
 menu <- function(bot, update) {
   id <- update$message$chat_id
-  bot$sendMessage(id, "Выбери период для получения расписания.",
-                  reply_markup = ReplyKeyboardMarkup(
-                    keyboard = list(list(
-                      KeyboardButton("На сегодня"),
-                      KeyboardButton("На завтра"),
-                      KeyboardButton("На неделю")),
-                      list(
-                        KeyboardButton("На следующую неделю"))
-                    ),
-                    resize_keyboard = TRUE,
-                    one_time_keyboard = FALSE
-                  ))
+
   text <- update$message$text
   is_even = (as.integer(Sys.Date()-as.Date('2021-02-08'))%/%7)%%2
   get_time <- function(num){
@@ -61,64 +59,76 @@ menu <- function(bot, update) {
     switch(num, "понедельник","вторник","среда","четверг","пятница","суббота")
   }
 
-  if (text == "На сегодня"){
+  if (text == "На сегодня") {
     day = to_num(weekdays(Sys.Date()))
     r = get_sch(id, day, is_even)
     bot$sendMessage(id, parse_mode = "Markdown",
-                    paste0(collapse='\n',
-                           unlist(r[1])," пара: ",
-                           sapply(unlist(r[1]), get_time),
-                           '\U00023F0',unlist(r[5]),
-                           '\U00023F0',unlist(r[3]),
-                           '\n',unlist(r[2]),
-                           '\n',unlist(r[4]),'\n'))
+      paste0('*==== \U0001F4C5 ',toupper(to_day(day)),' \U0001F4C5 ====* \n',
+     paste0(collapse='\n','*',unlist(r[1])," пара:* \U00023F0",sapply(unlist(r[1]), get_time),
+    ' \U0001F6AA',unlist(r[5]),' \U0001F6A9',unlist(r[3]),'\n',unlist(r[2]),'\n',unlist(r[4]),'\n'))
+    )
   }
-  else if (text == "На завтра"){
+  else if (text == "На завтра") {
     day = to_num(weekdays(Sys.Date()+1))
     r = get_sch(id, day, is_even)
     bot$sendMessage(id, parse_mode = "Markdown",
-                    paste0(collapse='\n',
-                           unlist(r[1])," пара: ",
-                           sapply(unlist(r[1]), get_time),
-                           '\U00023F0',unlist(r[5]),
-                           '\U00023F0',unlist(r[3]),
-                           '\n',unlist(r[2]),
-                           '\n',unlist(r[4]),'\n'))
+      paste0('*==== \U0001F4C5 ',toupper(to_day(day)),' \U0001F4C5 ====* \n',
+      paste0(collapse='\n','*',unlist(r[1])," пара:* \U00023F0",sapply(unlist(r[1]), get_time),
+    ' \U0001F6AA',unlist(r[5]),' \U0001F6A9',unlist(r[3]),'\n',unlist(r[2]),'\n',unlist(r[4]),'\n')))
   }
-  else if (text == "На неделю"){
+  else if (text == "На неделю") {
     res = c()
     for(day in 1:6){
       r = get_sch(id, day, is_even)
-      res = c(res, paste0(to_day(day),':\n',paste0(collapse='\n',unlist(r[1])," пара: ",sapply(unlist(r[1]), get_time),
-      '\U00023F0',unlist(r[5]),'\U00023F0',unlist(r[3]),'\n',unlist(r[2]),'\n',unlist(r[4]),'\n')))
+      res = c(res, paste0('*==== \U0001F4C5 ',toupper(to_day(day)),' \U0001F4C5 ====* \n',
+          paste0(collapse='\n','*',unlist(r[1])," пара:* \U00023F0",sapply(unlist(r[1]), get_time),
+      ' \U0001F6AA',unlist(r[5]),' \U0001F6A9',unlist(r[3]),'\n',unlist(r[2]),'\n',unlist(r[4]),'\n')))
     }
     bot$sendMessage(id, parse_mode = "Markdown",
-                    paste0(collapse='\n===========\n', res))
+                    paste0(collapse='\n', res))
 
   }
-  else if (text == "На следующую неделю"){
+  else if (text == "На следующую неделю") {
     if(is_even==0) is_even = 1
     else is_even = 0
     res = c()
     for(day in 1:6){
       r = get_sch(id, day, is_even)
-      res = c(res, paste0(to_day(day),':\n',paste0(collapse='\n',unlist(r[1])," пара: ",sapply(unlist(r[1]), get_time),
-    '\U00023F0',unlist(r[5]),'\U00023F0',unlist(r[3]),'\n',unlist(r[2]),'\n',unlist(r[4]),'\n')))
+      res = c(res, paste0('*==== \U0001F4C5 ',toupper(to_day(day)),' \U0001F4C5 ====* \n',
+  paste0(collapse='\n','*',unlist(r[1])," пара:* \U00023F0",sapply(unlist(r[1]), get_time),
+ ' \U0001F6AA',unlist(r[5]),' \U0001F6A9',unlist(r[3]),'\n',unlist(r[2]),'\n',unlist(r[4]),'\n')))
     }
     bot$sendMessage(id, parse_mode = "Markdown",
-                    paste0(collapse='\n===========\n', res))
+                    paste0(collapse='\n', res))
   }
+  bot$sendMessage(id, "Выбери период для получения расписания.",
+                  reply_markup = ReplyKeyboardMarkup(
+                    keyboard = list(list(
+                      KeyboardButton("На сегодня"),
+                      KeyboardButton("На завтра"),
+                      KeyboardButton("На неделю")),
+                      list(
+                        KeyboardButton("На следующую неделю"))
+                    ),
+                    resize_keyboard = TRUE,
+                    one_time_keyboard = FALSE
+                  ))
 
-}
+
+ }
 
 busy <- function(bot, update) {
   id <- update$message$chat_id
   bot$sendMessage(id, "В данный момент я обновляю расписание. Попробуй через пару минут.")
 }
 update <- function(bot, update) {
-  bot$sendMessage(460020469, "начинаю апдейт")
-  update_db()
-  bot$sendMessage(460020469, "готово")
+  if (update$message$chat_id == 460020469) {
+    bot$sendMessage(460020469, "начинаю апдейт")
+    BOT_IS_BUSY <- TRUE
+    update_db()
+    bot$sendMessage(460020469, "готово")
+    BOT_IS_BUSY <<- FALSE
+  }
 }
 state <- function(bot, update) {
   chat_state <- get_state(update$message$chat_id)

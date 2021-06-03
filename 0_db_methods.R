@@ -52,8 +52,7 @@ set_group_ <- function(chat_id, group, con) {
 }
 
 update_db_ <- function(con) {
-  BOT_IS_BUSY <<- TRUE
-  bot$sendMessage(460020469, "чищу записи")
+  bot$sendMessage(460020469, "???????? ????????????")
   dbExecute(con, "DELETE FROM groups;")
   dbExecute(con,"DELETE FROM SQLite_sequence WHERE name = 'groups';")
   dbExecute(con,'DELETE FROM schedule;')
@@ -61,7 +60,7 @@ update_db_ <- function(con) {
   dbExecute(con,'VACUUM;')
   json <- jsonlite::fromJSON("./parsing/schedule.json", simplifyVector = TRUE, simplifyMatrix = F)
   groups <- names(json)
-  bot$sendMessage(460020469, "обновляю группы")
+  bot$sendMessage(460020469, "???????????????? ????????????")
   for (group in groups)
     dbExecute(con, str_interp("
      INSERT INTO groups(id, name)
@@ -69,10 +68,10 @@ update_db_ <- function(con) {
                                WHERE name == '${group}'),
                             '${group}');
       "))
-  bot$sendMessage(460020469, "обновляю расписание")
+  bot$sendMessage(460020469, "?????????????? ????????????????????")
   total = (length(json))
   for (i in 1:total) {
-    if (i%%14==0)  bot$sendMessage(460020469, str_interp("${i%/%14*10}%"))
+    if (i %% 14 == 0)  bot$sendMessage(460020469, str_interp("${i%/%14*10}%"))
     gid <- unlist(dbGetQuery(con, str_interp("
         SELECT id FROM groups WHERE name = '${names(json[i])}';")))
     for (day in 1:6)
@@ -84,8 +83,6 @@ update_db_ <- function(con) {
                                 '${pairs[4]}','${pairs[5]}','${pairs[6]}');
             "))
   }
-  BOT_IS_BUSY <<- FAL
-  SE
 }
 
 get_sch_ <- function(id, day, even=2, con) {

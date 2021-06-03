@@ -2,7 +2,6 @@ library(telegram.bot)
 library(DBI)
 library(readr)
 library(RSQLite)
-library(docstring)
 
 library(stringr)
 

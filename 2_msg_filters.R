@@ -7,3 +7,7 @@ MessageFilters$OK <- BaseFilter(
   function(message)
     get_state( message$chat_id ) == "OK"
 )
+MessageFilters$BUSY <- BaseFilter(
+  function(message)
+    BOT_IS_BUSY
+)
