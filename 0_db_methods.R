@@ -24,14 +24,14 @@ set_state_ <- function(chat_id, state, con) {
       "))
 
 }
-
-find_user_ <- function(chat_id, con) {
-  data <- dbGetQuery(con, str_interp("
-      SELECT chat_id FROM student
-      WHERE chat_id = ${chat_id};
-      "))
-  return(nrow(data) == 0)
-}
+#
+# find_user_ <- function(chat_id, con) {
+#   data <- dbGetQuery(con, str_interp("
+#       SELECT chat_id FROM student
+#       WHERE chat_id = ${chat_id};
+#       "))
+#   return(nrow(data) == 0)
+# }
 
 set_group_ <- function(chat_id, group, con) {
   check <- dbGetQuery(con, str_interp("
@@ -52,7 +52,7 @@ set_group_ <- function(chat_id, group, con) {
 }
 
 update_db_ <- function(con) {
-  bot$sendMessage(460020469, "???????? ????????????")
+  bot$sendMessage(460020469, "чищу группы")
   dbExecute(con, "DELETE FROM groups;")
   dbExecute(con,"DELETE FROM SQLite_sequence WHERE name = 'groups';")
   dbExecute(con,'DELETE FROM schedule;')
@@ -60,7 +60,7 @@ update_db_ <- function(con) {
   dbExecute(con,'VACUUM;')
   json <- jsonlite::fromJSON("./parsing/schedule.json", simplifyVector = TRUE, simplifyMatrix = F)
   groups <- names(json)
-  bot$sendMessage(460020469, "???????????????? ????????????")
+  bot$sendMessage(460020469, "обновляю группы")
   for (group in groups)
     dbExecute(con, str_interp("
      INSERT INTO groups(id, name)
@@ -68,7 +68,7 @@ update_db_ <- function(con) {
                                WHERE name == '${group}'),
                             '${group}');
       "))
-  bot$sendMessage(460020469, "?????????????? ????????????????????")
+  bot$sendMessage(460020469, "заполняю базу")
   total = (length(json))
   for (i in 1:total) {
     if (i %% 14 == 0)  bot$sendMessage(460020469, str_interp("${i%/%14*10}%"))
@@ -108,7 +108,7 @@ get_sch_ <- function(id, day, even=2, con) {
 
 get_state <- with_con(get_state_)
 set_state <- with_con(set_state_)
-find_user <- with_con(find_user_)
+# find_user <- with_con(find_user_)
 set_group <- with_con(set_group_)
 update_db <- with_con(update_db_)
-get_sch <- with_con(get_sch_)
+get_sch   <- with_con(get_sch_)

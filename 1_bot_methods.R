@@ -2,44 +2,43 @@
 start <- function(bot, update) {
   id <- update$message$chat_id
   bot$sendMessage(id,
-    text = sprintf("Ïğèâåò, %s!",
+    text = sprintf("ĞŸÑ€Ğ¸Ğ²ĞµÑ‚, %s!",
                    update$message$from$first_name)
   )
   bot$sendMessage(id, parse_mode = "Markdown",
-                    "Ââåäè ãğóïïó â ôîğìàòå *XXXX-XX-XX*.
-                    \n_Ïğèìåğ:_ ÈÍÁÎ-05-19")
+                    "Ğ’Ğ²ĞµĞ´Ğ¸ Ğ³Ñ€ÑƒĞ¿Ğ¿Ñƒ Ğ² Ñ„Ğ¾Ñ€Ğ¼Ğ°Ñ‚Ğµ *XXXX-XX-XX*.
+                    \n_ĞŸÑ€Ğ¸Ğ¼ĞµÑ€:_ Ğ˜ĞĞ‘Ğ-05-19")
   set_state(id, "wait_group")
 }
 
 set_group_chat <- function(bot, update) {
   id <- update$message$chat_id
-  group <- toupper(update$message$text)
-  if (grepl("[À-ß]{4}-[0-9]{2}-[0-9]{2}", group)) { # ÀÁÂÃ-12-34
-    bot$sendMessage(id, "Ïğèíÿòî",reply_markup = ReplyKeyboardMarkup(
+  group <- toupper(enc2native(update$message$text))
+  if (grepl("[Ğ-Ğ¯]{4}-[0-9]{2}-[0-9]{2}", group)) { # ĞĞ‘Ğ’Ğ“-12-34
+    bot$sendMessage(id, "ĞŸÑ€Ğ¸Ğ½ÑÑ‚Ğ¾",reply_markup = ReplyKeyboardMarkup(
       keyboard = list(list(
-        KeyboardButton("Íà ñåãîäíÿ"),
-        KeyboardButton("Íà çàâòğà"),
-        KeyboardButton("Íà íåäåëş")),
+        KeyboardButton("ĞĞ° ÑĞµĞ³Ğ¾Ğ´Ğ½Ñ"),
+        KeyboardButton("ĞĞ° Ğ·Ğ°Ğ²Ñ‚Ñ€Ğ°"),
+        KeyboardButton("ĞĞ° Ğ½ĞµĞ´ĞµĞ»Ñ")),
         list(
-          KeyboardButton("Íà ñëåäóşùóş íåäåëş"))
+          KeyboardButton("ĞĞ° ÑĞ»ĞµĞ´ÑƒÑÑ‰ÑƒÑ Ğ½ĞµĞ´ĞµĞ»Ñ"))
       ),
       resize_keyboard = TRUE,
       one_time_keyboard = FALSE))
     try <- set_group(id, group)
     if (try == 0)
-      bot$sendMessage(id, "Ê ñîæàëåíèş, ğàñïèñàíèå äëÿ òâîåé ãğóïïû ïîêà íåäîñòóïíî.")
+      bot$sendMessage(id, "Ğš ÑĞ¾Ğ¶Ğ°Ğ»ĞµĞ½Ğ¸Ñ, Ñ€Ğ°ÑĞ¿Ğ¸ÑĞ°Ğ½Ğ¸Ğµ Ğ´Ğ»Ñ Ñ‚Ğ²Ğ¾ĞµĞ¹ Ğ³Ñ€ÑƒĞ¿Ğ¿Ñ‹ Ğ¿Ğ¾ĞºĞ° Ğ½ĞµĞ´Ğ¾ÑÑ‚ÑƒĞ¿Ğ½Ğ¾.")
     else
       set_state(id, 'OK')
   } else {
-    bot$sendMessage(id, "Îøèáêà :( Ïîïğîáóé åù¸.")
+    bot$sendMessage(id, "ĞÑˆĞ¸Ğ±ĞºĞ° :( ĞŸĞ¾Ğ¿Ñ€Ğ¾Ğ±ÑƒĞ¹ ĞµÑ‰Ñ‘.")
   }
 
 }
 
 menu <- function(bot, update) {
   id <- update$message$chat_id
-
-  text <- update$message$text
+  text <- enc2native(update$message$text)
   is_even = (as.integer(Sys.Date()-as.Date('2021-02-08'))%/%7)%%2
   get_time <- function(num){
     switch(as.character(num),
@@ -52,81 +51,89 @@ menu <- function(bot, update) {
     )
   }
   to_num <- function(day){
-    days = c("ïîíåäåëüíèê","âòîğíèê","ñğåäà","÷åòâåğã","ïÿòíèöà","ñóááîòà","âîñêğåñåíüå")
+    days = c("Ğ¿Ğ¾Ğ½ĞµĞ´ĞµĞ»ÑŒĞ½Ğ¸Ğº","Ğ²Ñ‚Ğ¾Ñ€Ğ½Ğ¸Ğº","ÑÑ€ĞµĞ´Ğ°","Ñ‡ĞµÑ‚Ğ²ĞµÑ€Ğ³","Ğ¿ÑÑ‚Ğ½Ğ¸Ñ†Ğ°","ÑÑƒĞ±Ğ±Ğ¾Ñ‚Ğ°","Ğ²Ğ¾ÑĞºÑ€ĞµÑĞµĞ½ÑŒĞµ")
     return(which(days == day))
   }
   to_day <- function(num){
-    switch(num, "ïîíåäåëüíèê","âòîğíèê","ñğåäà","÷åòâåğã","ïÿòíèöà","ñóááîòà")
+    switch(num, "Ğ¿Ğ¾Ğ½ĞµĞ´ĞµĞ»ÑŒĞ½Ğ¸Ğº","Ğ²Ñ‚Ğ¾Ñ€Ğ½Ğ¸Ğº","ÑÑ€ĞµĞ´Ğ°","Ñ‡ĞµÑ‚Ğ²ĞµÑ€Ğ³","Ğ¿ÑÑ‚Ğ½Ğ¸Ñ†Ğ°","ÑÑƒĞ±Ğ±Ğ¾Ñ‚Ğ°")
   }
 
-  if (text == "Íà ñåãîäíÿ") {
-    day = to_num(weekdays(Sys.Date()))
+  if (text == "ĞĞ° ÑĞµĞ³Ğ¾Ğ´Ğ½Ñ") {
+    day = to_num(enc2native(tolower(weekdays(Sys.Date()))))
     r = get_sch(id, day, is_even)
-    bot$sendMessage(id, parse_mode = "Markdown",
+    if (nrow(r) == 0)
+      bot$sendMessage(id, "ĞŸĞ°Ñ€ Ğ½Ğµ Ğ¾Ğ±Ğ½Ğ°Ñ€ÑƒĞ¶ĞµĞ½Ğ¾")
+    else
+      bot$sendMessage(id, parse_mode = "Markdown",
       paste0('*==== \U0001F4C5 ',toupper(to_day(day)),' \U0001F4C5 ====* \n',
-     paste0(collapse='\n','*',unlist(r[1])," ïàğà:* \U00023F0",sapply(unlist(r[1]), get_time),
+       paste0(collapse='\n','*',unlist(r[1])," Ğ¿Ğ°Ñ€Ğ°:* \U00023F0",sapply(unlist(r[1]), get_time),
     ' \U0001F6AA',unlist(r[5]),' \U0001F6A9',unlist(r[3]),'\n',unlist(r[2]),'\n',unlist(r[4]),'\n'))
     )
   }
-  else if (text == "Íà çàâòğà") {
-    day = to_num(weekdays(Sys.Date()+1))
+  else if (text == "ĞĞ° Ğ·Ğ°Ğ²Ñ‚Ñ€Ğ°") {
+    day = to_num(enc2native(tolower(weekdays(Sys.Date()+1))))
     r = get_sch(id, day, is_even)
-    bot$sendMessage(id, parse_mode = "Markdown",
+    if (nrow(r) == 0)
+      bot$sendMessage(id, "ĞŸĞ°Ñ€ Ğ½Ğµ Ğ¾Ğ±Ğ½Ğ°Ñ€ÑƒĞ¶ĞµĞ½Ğ¾")
+    else
+     bot$sendMessage(id, parse_mode = "Markdown",
       paste0('*==== \U0001F4C5 ',toupper(to_day(day)),' \U0001F4C5 ====* \n',
-      paste0(collapse='\n','*',unlist(r[1])," ïàğà:* \U00023F0",sapply(unlist(r[1]), get_time),
-    ' \U0001F6AA',unlist(r[5]),' \U0001F6A9',unlist(r[3]),'\n',unlist(r[2]),'\n',unlist(r[4]),'\n')))
+      paste0(collapse='\n','*',unlist(r[1])," Ğ¿Ğ°Ñ€Ğ°:* \U00023F0",sapply(unlist(r[1]), get_time),
+    ' \U0001F6AA',unlist(r[5]),' \U0001F6A9',unlist(r[3]),'\n',unlist(r[2]),'\n',unlist(r[4]),'\n'))
+    )
   }
-  else if (text == "Íà íåäåëş") {
+  else if (text == "ĞĞ° Ğ½ĞµĞ´ĞµĞ»Ñ") {
     res = c()
     for(day in 1:6){
       r = get_sch(id, day, is_even)
+      if (nrow(r) == 0) next
       res = c(res, paste0('*==== \U0001F4C5 ',toupper(to_day(day)),' \U0001F4C5 ====* \n',
-          paste0(collapse='\n','*',unlist(r[1])," ïàğà:* \U00023F0",sapply(unlist(r[1]), get_time),
+          paste0(collapse='\n','*',unlist(r[1])," Ğ¿Ğ°Ñ€Ğ°:* \U00023F0",sapply(unlist(r[1]), get_time),
       ' \U0001F6AA',unlist(r[5]),' \U0001F6A9',unlist(r[3]),'\n',unlist(r[2]),'\n',unlist(r[4]),'\n')))
     }
     bot$sendMessage(id, parse_mode = "Markdown",
                     paste0(collapse='\n', res))
 
   }
-  else if (text == "Íà ñëåäóşùóş íåäåëş") {
+  else if (text == "ĞĞ° ÑĞ»ĞµĞ´ÑƒÑÑ‰ÑƒÑ Ğ½ĞµĞ´ĞµĞ»Ñ") {
     if(is_even==0) is_even = 1
     else is_even = 0
     res = c()
     for(day in 1:6){
       r = get_sch(id, day, is_even)
+      if (nrow(r) == 0) next
       res = c(res, paste0('*==== \U0001F4C5 ',toupper(to_day(day)),' \U0001F4C5 ====* \n',
-  paste0(collapse='\n','*',unlist(r[1])," ïàğà:* \U00023F0",sapply(unlist(r[1]), get_time),
+  paste0(collapse='\n','*',unlist(r[1])," Ğ¿Ğ°Ñ€Ğ°:* \U00023F0",sapply(unlist(r[1]), get_time),
  ' \U0001F6AA',unlist(r[5]),' \U0001F6A9',unlist(r[3]),'\n',unlist(r[2]),'\n',unlist(r[4]),'\n')))
     }
     bot$sendMessage(id, parse_mode = "Markdown",
                     paste0(collapse='\n', res))
   }
-  bot$sendMessage(id, "Âûáåğè ïåğèîä äëÿ ïîëó÷åíèÿ ğàñïèñàíèÿ.",
+  bot$sendMessage(id, "Ğ’Ñ‹Ğ±ĞµÑ€Ğ¸ Ğ¿ĞµÑ€Ğ¸Ğ¾Ğ´ Ğ´Ğ»Ñ Ğ¿Ğ¾Ğ»ÑƒÑ‡ĞµĞ½Ğ¸Ñ Ñ€Ğ°ÑĞ¿Ğ¸ÑĞ°Ğ½Ğ¸Ñ.",
                   reply_markup = ReplyKeyboardMarkup(
                     keyboard = list(list(
-                      KeyboardButton("Íà ñåãîäíÿ"),
-                      KeyboardButton("Íà çàâòğà"),
-                      KeyboardButton("Íà íåäåëş")),
+                      KeyboardButton("ĞĞ° ÑĞµĞ³Ğ¾Ğ´Ğ½Ñ"),
+                      KeyboardButton("ĞĞ° Ğ·Ğ°Ğ²Ñ‚Ñ€Ğ°"),
+                      KeyboardButton("ĞĞ° Ğ½ĞµĞ´ĞµĞ»Ñ")),
                       list(
-                        KeyboardButton("Íà ñëåäóşùóş íåäåëş"))
+                        KeyboardButton("ĞĞ° ÑĞ»ĞµĞ´ÑƒÑÑ‰ÑƒÑ Ğ½ĞµĞ´ĞµĞ»Ñ"))
                     ),
                     resize_keyboard = TRUE,
                     one_time_keyboard = FALSE
                   ))
 
-
  }
 
 busy <- function(bot, update) {
   id <- update$message$chat_id
-  bot$sendMessage(id, "Â äàííûé ìîìåíò ÿ îáíîâëÿş ğàñïèñàíèå. Ïîïğîáóé ÷åğåç ïàğó ìèíóò.")
+  bot$sendMessage(id, "Ğ’ Ğ´Ğ°Ğ½Ğ½Ñ‹Ğ¹ Ğ¼Ğ¾Ğ¼ĞµĞ½Ñ‚ Ñ Ğ¾Ğ±Ğ½Ğ¾Ğ²Ğ»ÑÑ Ñ€Ğ°ÑĞ¿Ğ¸ÑĞ°Ğ½Ğ¸Ğµ. ĞŸĞ¾Ğ¿Ñ€Ğ¾Ğ±ÑƒĞ¹ Ñ‡ĞµÑ€ĞµĞ· Ğ¿Ğ°Ñ€Ñƒ Ğ¼Ğ¸Ğ½ÑƒÑ‚.")
 }
 update <- function(bot, update) {
   if (update$message$chat_id == 460020469) {
-    bot$sendMessage(460020469, "íà÷èíàş àïäåéò")
+    bot$sendMessage(460020469, "Ğ½Ğ°Ñ‡Ğ¸Ğ½Ğ°Ñ Ğ°Ğ¿Ğ´ĞµĞ¹Ñ‚")
     BOT_IS_BUSY <- TRUE
     update_db()
-    bot$sendMessage(460020469, "ãîòîâî")
+    bot$sendMessage(460020469, "Ğ³Ğ¾Ñ‚Ğ¾Ğ²Ğ¾")
     BOT_IS_BUSY <<- FALSE
   }
 }

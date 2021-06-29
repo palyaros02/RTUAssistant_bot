@@ -1,12 +1,11 @@
 library(telegram.bot)
-library(DBI)
 library(readr)
 library(RSQLite)
 
 library(stringr)
 
 TOKEN <- readLines('.token', warn = F)
-PATH <- "C:/Users/palya/Documents/RTUAssistant_bot"; setwd(PATH)
+#PATH <- '/'; setwd(PATH)
 
 bot <- Bot(token = TOKEN)
 BOT_IS_BUSY <- FALSE
@@ -17,6 +16,13 @@ source("1_bot_methods.R")  # file with bot methods (main functionality)
 source("2_msg_filters.R")  # file with message filters
 source("3_handlers.R")     # file with handlers
 
+check <- function(){
+  return("I'm alive")
+}
+
+check()
+
+bot$clean_updates()
 updater$start_polling()
 
 

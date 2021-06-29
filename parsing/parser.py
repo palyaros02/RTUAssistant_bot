@@ -27,7 +27,7 @@ def get_content(src):
     for item in items:
         item_href = item.get("href").replace(" ", "%20")
         hrefs.append(item_href)
-    with open("./hrefs.txt", "w", newline='', encoding="utf-8") as file:
+    with open("./parsing/hrefs.txt", "w", newline='', encoding="utf-8") as file:
         writer = csv.writer(file, delimiter=';')
         for item in hrefs:
             if item[-4:] == "xlsx" \
@@ -35,21 +35,25 @@ def get_content(src):
                 filtered.append(item)
                 writer.writerow([item])
 
+print("parse hrefs")
 get_content(get_src(URL))
+print("ok\n")
 # ============
 
 # ==== Downloading files ====
+print("download...")
 def download(hrefs):
     for href in hrefs:
-        with open(r'./xlsx/' + href[-23:], 'wb') as f:
+        with open(r'./parsing/xlsx/' + href[-23:], 'wb') as f:
             data = requests.get(href)
             f.write(data.content)
 download(filtered)
+print("ok\n")
 # ============================
-
+print("create json")
 res = dict()
 for href in filtered:
-    wb = openpyxl.load_workbook('./xlsx/'+href[-23:])
+    wb = openpyxl.load_workbook('./parsing/xlsx/'+href[-23:])
     sheet = wb[wb.sheetnames[0]]
     for i in range(1, sheet.max_column):
         group = sheet.cell(row=2, column=i).value
@@ -70,5 +74,6 @@ for href in filtered:
                             pairs.append((is_even, pair_no, content, type, teacher, aud))
                     days[day] = pairs.copy()
                 res[group] = days.copy()
-with open("./schedule.json", 'w', encoding="utf-8") as f:
+with open("./parsing/schedule.json", 'w', encoding="utf-8") as f:
     f.write(json.dumps(res, ensure_ascii=False, separators=(',', ':')))
+print("ok\n")

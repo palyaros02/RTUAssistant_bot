@@ -1,5 +1,10 @@
-install.packages(
-  c("telegram.bot",
-    "DBI",
-    "readr",
-    "RSQLite"))
+if ("DBI" %in% rownames(installed.packages()) == FALSE)
+  install.packages("DBI")
+if ("readr" %in% rownames(installed.packages()) == FALSE)
+  install.packages("readr")
+if ("RSQLite" %in% rownames(installed.packages()) == FALSE)
+  install.packages("RSQLite")
+if ("telegram.bot" %in% rownames(installed.packages()) == FALSE)
+  install.packages("telegram.bot")
+if ("stringr" %in% rownames(installed.packages()) == FALSE)
+  install.packages("stringr")
